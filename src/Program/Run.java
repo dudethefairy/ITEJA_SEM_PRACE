@@ -36,7 +36,7 @@ public class Run {
             ExecutionContext ex = new ExecutionContext(pc, null);
             ex.setGlobal(ex);
             prog.execute(ex);
-//            prog.printAST();
+            prog.printAST();
 
         } catch (Exception ex) {
             Logger.getLogger(Run.class.getName()).log(Level.SEVERE, null, ex);

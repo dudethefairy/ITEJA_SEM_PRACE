@@ -1,10 +1,10 @@
 CONST g:int=10;
 VAR x:string, z:double, d:double;
 
-PROCEDURE proc;
+PROCEDURE proc();
 CONST i:int=5;
 
-PROCEDURE proc2;
+PROCEDURE proc2();
 CONST p:int=5;
 VAR y:int;
 BEGIN
@@ -14,18 +14,18 @@ d :=y*p
 END;
 
 BEGIN
-CALL proc2;
+CALL proc2();
 !"Zadejte x: (x je string a je převeden na číslo pomocí +)";
 ?x;
 z :=+x*i+d/g
 END;
 
-PROCEDURE kdyz;
+PROCEDURE kdyz(pepa:string,jana:int);
 BEGIN
 IF z<100 THEN !"Hurá";
 END;
 
-PROCEDURE while;
+PROCEDURE while();
 BEGIN
 WHILE z>0 DO BEGIN
 z:=z-1;
@@ -37,11 +37,11 @@ BEGIN
 !"Příklad";
 !"z=x*5+d/10";
 !"d=y*5";
-CALL proc;
+CALL proc();
 !"Výsledek: ";
 !z;
 !"Jestli je z<100 vypiš Hurá!";
-CALL kdyz;
+CALL kdyz("lama",10);
 !"Dokud je z>0 odečti od něj jedna a vypiš každou lichou hodnotu z!";
-CALL while
+CALL while()
 END.

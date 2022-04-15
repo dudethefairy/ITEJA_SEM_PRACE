@@ -5,24 +5,26 @@
  */
 package Block;
 
+import Block.Datatype.DataType;
 import java.util.ArrayList;
 
 /**
  *
  * @author tzlat
  */
-public class Procedure {
-
+public class Function {
     private Block block;
     private String ident;
+    private DataType dataType;
     private ArrayList<Var> parameters;
 
-    public Procedure(String ident, Block block, ArrayList<Var> parameters) {
+    public Function(String ident, Block block,DataType dataType, ArrayList<Var> parameters) {
         this.ident = ident;
         this.block = block;
+        this.dataType = dataType;
         this.parameters = parameters;
     }
-
+    
     public String getIdent() {
         return ident;
     }
@@ -31,21 +33,8 @@ public class Procedure {
         return block;
     }
 
-    public ArrayList<Var> getParameters() {
-        return parameters;
-    }
-    
-
     @Override
     public String toString() {
-        String par = "";
-        for (int i=0;i<parameters.size();i++) {
-            if(i>0 && i<parameters.size()-1)
-            par+=", ";
-            par+=parameters.get(i).toString();
-            
-        }
-        return "Procedure{" + "ident=" + ident + "} Arguments("+par+")\n" + block;
+        return "Function{ ident=" + ident + ", dataType=" + dataType + "}\n"+block;
     }
-
 }

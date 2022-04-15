@@ -7,6 +7,8 @@ package Parser;
 
 import Block.Block;
 import Block.Const;
+import Block.Data;
+import Block.Datatype.DataType;
 import Block.Datatype.DoubleD;
 import Block.Datatype.IntegerD;
 import Block.Datatype.StringD;
@@ -29,7 +31,7 @@ import Lox.Lox;
 import Lox.Token;
 import Lox.TokenType;
 import Statement.BeginEndStatement;
-import Statement.CallStatement;
+import Statement.CallProcedureStatement;
 import Statement.IfStatement;
 import Statement.ReadStatement;
 import Statement.SetStatement;
@@ -38,6 +40,7 @@ import Statement.WhileStatement;
 import Statement.WriteStatement;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  *
@@ -212,22 +215,53 @@ public class Parser {
             list.pop();
             if (list.peek().getType() == TokenType.IDENT) {
                 String ident = list.pop().getLexeme();
-                ArrayList<Procedure> test = new ArrayList<>();
-                test.addAll(procs);
-                for (Procedure dat : test) {
+                for (Procedure dat : procs) {
                     if (dat.getIdent().equals(ident)) {
                         throw printError(list.getFirst(), "Identifikator procedury je jiz deklarovany");
                     }
                 }
-                if (list.pop().getType() == TokenType.STREDNIK) {
-                    Block block = readBlock();
-                    if (list.pop().getType() == TokenType.STREDNIK) {
-                        procs.add(new Procedure(ident, block));
+                if (list.pop().getType() == TokenType.LEVA_ZAVORKA) {
+                    ArrayList<Var> parametry = new ArrayList<>();
+                    while (list.peek().getType() == TokenType.IDENT) {
+                        String identPar = list.pop().getLexeme();
+                        if (list.pop().getType() == TokenType.DVOJTECKA) {
+                            if (list.peek().getType() == TokenType.DATATYPE_STRING) {
+                                list.pop();
+                                parametry.add(new Var(identPar, new StringD()));
+                            } else if (list.peek().getType() == TokenType.DATATYPE_INTEGER) {
+                                list.pop();
+                                parametry.add(new Var(identPar, new IntegerD()));
+                            } else if (list.pop().getType() == TokenType.DATATYPE_DOUBLE) {
+                                list.pop();
+                                parametry.add(new Var(identPar, new DoubleD()));
+                            } else {
+                                throw printError(list.getFirst(), "Ocekavam datovy typ");
+                            }
+                            if (list.peek().getType() == TokenType.CARKA) {
+                                list.pop();
+                            } else {
+                                break;
+                            }
+                        } else {
+                            throw printError(list.getFirst(), "Ocekavam :");
+                        }
+                    }
+                    if (list.pop().getType() == TokenType.PRAVA_ZAVORKA) {
+                        if (list.pop().getType() == TokenType.STREDNIK) {
+                            Block block = readBlock();
+                            if (list.pop().getType() == TokenType.STREDNIK) {
+                                procs.add(new Procedure(ident, block, parametry));
+                            } else {
+                                throw printError(list.getFirst(), "Ocekavam ;");
+                            }
+                        } else {
+                            throw printError(list.getFirst(), "Ocekavam ;");
+                        }
                     } else {
-                        throw printError(list.getFirst(), "Ocekavam ;");
+                        throw printError(list.getFirst(), "Ocekavam )");
                     }
                 } else {
-                    throw printError(list.getFirst(), "Ocekavam ;");
+                    throw printError(list.getFirst(), "Ocekavam (");
                 }
             } else {
                 throw printError(list.getFirst(), "Ocekavam Identifikator");
@@ -270,7 +304,7 @@ public class Parser {
         return new SetStatement(ident, expression);
     }
 
-    public CallStatement readCallStatement() throws Exception {
+    public CallProcedureStatement readCallStatement() throws Exception {
         if (list.peek().getType() != TokenType.CALL) {
             throw printError(list.getFirst(), "Ocekavam CALL");
         }
@@ -279,7 +313,26 @@ public class Parser {
             throw printError(list.getFirst(), "Ocekavam IDENT");
         }
         String ident = list.pop().getLexeme();
-        return new CallStatement(ident);
+        ArrayList<Expression> parametry = new ArrayList<>();
+        if (list.pop().getType() == TokenType.LEVA_ZAVORKA) {
+            if (list.peek().getType() != TokenType.PRAVA_ZAVORKA) {
+                while (true) {
+                    Expression expr = readExpression();
+                    parametry.add(expr);
+                    if (list.peek().getType() == TokenType.CARKA) {
+                        list.pop();
+                    } else {
+                        break;
+                    }
+                }
+            }
+            if (list.pop().getType() != TokenType.PRAVA_ZAVORKA) {
+                throw printError(list.getFirst(), "Ocekavam )");
+            }
+        } else {
+            throw printError(list.getFirst(), "Ocekavam (");
+        }
+        return new CallProcedureStatement(ident, parametry);
     }
 
     public ReadStatement readReadStatement() throws Exception {
@@ -456,7 +509,7 @@ public class Parser {
         } else if (list.peek().getType() == TokenType.LEVA_ZAVORKA) {
             list.pop();
             return readExpression();
-        }else {
+        } else {
             return readLiteral();
         }
     }
