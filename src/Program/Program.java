@@ -9,6 +9,7 @@ import Block.Block;
 import Block.Var;
 import Lox.Lox;
 import Lox.Token;
+import Lox.TokenType;
 import Parser.Executable;
 import Parser.Parser;
 import java.io.File;
@@ -22,24 +23,42 @@ import java.util.logging.Logger;
  *
  * @author tzlat
  */
-public class Program extends Executable {
+public class Program {
 
     LinkedList<Token> list;
+    String ident;
     Parser parser;
     Block block;
+    ProgramContext pc;
+    ExecutionContext ex;
 
     public Program(LinkedList<Token> tokens) throws Exception {
+        pc = new ProgramContext();
+        ex = new ExecutionContext(pc, null);
         this.list = tokens;
+        if (list.pop().getType() == TokenType.PROGRAM) {
+            if (list.peek().getType() == TokenType.IDENT) {
+                ident = list.pop().getLexeme();
+            } else {
+                throw new Exception("Ocekava se identifikator programu");
+            }
+            if (list.pop().getType() != TokenType.STREDNIK) {
+                throw new Exception("Ocekava se strednik na konci radku");
+            }
+        } else {
+            throw new Exception("Ocekava se program");
+        }
         parser = new Parser(list);
         block = parser.parse();
+        ex.setGlobal(ex);
     }
-
-    @Override
-    public void execute(ExecutionContext ex) throws Exception {
+    
+    public void execute() throws Exception {
         block.execute(ex);
     }
 
     public void printAST() {
+        System.out.println("Program: "+ident);
         System.out.println(parser.toString());
     }
 

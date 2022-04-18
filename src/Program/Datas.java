@@ -11,6 +11,7 @@ import Block.Datatype.DataType;
 import Block.Datatype.DoubleD;
 import Block.Datatype.IntegerD;
 import Block.Datatype.StringD;
+import Block.Function;
 import Exceptions.NotFoundException;
 import Block.Var;
 import java.util.ArrayList;
@@ -23,10 +24,12 @@ public class Datas {
 
     private ArrayList<Var> vars;
     private ArrayList<Const> consts;
+    private ArrayList<Function> funcs;
 
     public Datas() {
         vars = new ArrayList<>();
         consts = new ArrayList<>();
+        funcs = new ArrayList<>();
     }
 
     public void setVars(ArrayList<Var> vars) {
@@ -40,6 +43,10 @@ public class Datas {
     public ArrayList<Var> getVars() {
         return vars;
     }
+    
+    public ArrayList<Function> getFuncs() {
+        return funcs;
+    }
 
     public ArrayList<Const> getConsts() {
         return consts;
@@ -51,6 +58,69 @@ public class Datas {
 
     public void addConsts(ArrayList<Const> consts) {
         this.consts.addAll(consts);
+    }
+    
+    public void addFuncs(ArrayList<Function> funcs) {
+        this.funcs.addAll(funcs);
+    }
+    public void setFuncs(ArrayList<Function> consts) {
+        this.funcs = funcs;
+    }
+    public Object getF(String ident) throws Exception {
+        for (Function fun : funcs) {
+            if (fun.getIdent().equals(ident)) {
+                if (fun.getDataType().getClass() == DoubleD.class) {
+                    DoubleD doubl = (DoubleD) fun.getDataType();
+                    return doubl;
+                } else if (fun.getDataType().getClass() == IntegerD.class) {
+                    IntegerD intgr = (IntegerD) fun.getDataType();
+                    return intgr;
+                } else if (fun.getDataType().getClass() == StringD.class) {
+                    StringD str = (StringD) fun.getDataType();
+                    return str;
+                } else {
+                    throw new Exception("Neznámý datový typ");
+                }
+            }
+        }
+        throw new NotFoundException("Hodnota funkce " + ident + " nenalezena");
+    }
+    
+    public void setF(String ident, Object value) throws Exception {
+        for (Function fun : funcs) {
+            if (fun.getIdent().equals(ident)) {
+                if (fun.getDataType().getClass() == DoubleD.class) {
+                    if (value.getClass() == DoubleD.class) {
+                        fun.setValue((DoubleD) value);
+                    } else if (value.getClass() == IntegerD.class) {
+                        IntegerD dou = (IntegerD) value;
+                        fun.setValue(new DoubleD(dou.getValue()));
+                    } else {
+                        throw new Exception("Nelze přiřadit hodnotu " + value + " do proměnné \"" + ident + "\" typu " + fun.getDataType().getClass().getSimpleName());
+                    }
+                } else if (fun.getDataType().getClass() == IntegerD.class) {
+                    if (value.getClass() == IntegerD.class) {
+                        fun.setValue((IntegerD) value);
+                    } else if (value.getClass() == DoubleD.class) {
+                        DoubleD dou = (DoubleD) value;
+                        fun.setValue(new IntegerD((int) dou.getValue()));
+                    } else {
+                        throw new Exception("Nelze přiřadit hodnotu " + value + " do proměnné \"" + ident + "\" typu " + fun.getDataType().getClass().getSimpleName());
+                    }
+                } else if (fun.getDataType().getClass() == StringD.class) {
+                    if (value.getClass() == StringD.class) {
+                        fun.setValue((StringD) value);
+                    } else {
+                        throw new Exception("Nelze přiřadit hodnotu " + value + " do proměnné \"" + ident + "\" typu " + fun.getDataType().getClass().getSimpleName());
+                    }
+                    
+                } else {
+                    throw new Exception("Chyba přiřazení proměné");
+                }
+                return;
+            }
+        }
+        throw new NotFoundException("Proměnná " + ident + " nebyla deklarována");
     }
 
     public Object get(String ident) throws Exception {

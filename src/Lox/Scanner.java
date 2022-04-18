@@ -27,19 +27,23 @@ class Scanner {
 
     static {
         keywords = new HashMap<>();
-        keywords.put("CONST", CONST);
-        keywords.put("VAR", VAR);
-        keywords.put("PROCEDURE", PROCEDURE);
-        keywords.put("CALL", CALL);
-        keywords.put("BEGIN", BEGIN);
-        keywords.put("END", END);
-        keywords.put("IF", IF);
-        keywords.put("THEN", THEN);
-        keywords.put("WHILE", WHILE);
-        keywords.put("DO", DO);
-        keywords.put("ODD", ODD);
-        keywords.put("READ", DO);
-        keywords.put("WRITE", ODD);
+        keywords.put("program",PROGRAM);
+        keywords.put("const", CONST);
+        keywords.put("var", VAR);
+        keywords.put("procedure", PROCEDURE);
+        keywords.put("function", FUNCTION);
+        keywords.put("set", SET);
+        keywords.put("fcall", FCALL);
+        keywords.put("pcall", PCALL);
+        keywords.put("begin", BEGIN);
+        keywords.put("end", END);
+        keywords.put("if", IF);
+        keywords.put("then", THEN);
+        keywords.put("while", WHILE);
+        keywords.put("do", DO);
+        keywords.put("odd", ODD);
+        keywords.put("read", READ);
+        keywords.put("writeln", WRITE);
         keywords.put("string", DATATYPE_STRING);
         keywords.put("double", DATATYPE_DOUBLE);
         keywords.put("int", DATATYPE_INTEGER);
@@ -132,7 +136,7 @@ class Scanner {
             case '\n':
                 line++;
                 break;
-            case '"':
+            case '\'':
                 string();
                 break;
             default:
@@ -202,7 +206,7 @@ class Scanner {
     }
 
     private void string() {
-        while (peek() != '"' && !isAtEnd()) {
+        while (peek() != '\'' && !isAtEnd()) {
             if (peek() == '\n') {
                 line++;
             }

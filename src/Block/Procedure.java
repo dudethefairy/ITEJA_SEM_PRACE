@@ -15,12 +15,12 @@ public class Procedure {
 
     private Block block;
     private String ident;
-    private ArrayList<Var> parameters;
+    private ArrayList<Var> arguments;
 
-    public Procedure(String ident, Block block, ArrayList<Var> parameters) {
+    public Procedure(String ident, Block block, ArrayList<Var> arguments) {
         this.ident = ident;
         this.block = block;
-        this.parameters = parameters;
+        this.arguments = arguments;
     }
 
     public String getIdent() {
@@ -31,21 +31,20 @@ public class Procedure {
         return block;
     }
 
-    public ArrayList<Var> getParameters() {
-        return parameters;
+    public ArrayList<Var> getArguments() {
+        return arguments;
     }
     
 
     @Override
     public String toString() {
-        String par = "";
-        for (int i=0;i<parameters.size();i++) {
-            if(i>0 && i<parameters.size()-1)
-            par+=", ";
-            par+=parameters.get(i).toString();
-            
+        String arg = "";
+        for (int i=0;i<arguments.size();i++) {
+            if(i>0 && i<arguments.size()-1)
+            arg+=", ";
+            arg+=arguments.get(i).toString();
         }
-        return "Procedure{" + "ident=" + ident + "} Arguments("+par+")\n" + block;
+        return "Procedure{" + "ident=" + ident + "} Arguments("+arg+")\n" + block;
     }
 
 }

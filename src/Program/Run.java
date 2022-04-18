@@ -32,10 +32,7 @@ public class Run {
         }
         try {
             Program prog = new Program(lox.getTokens());
-            ProgramContext pc = new ProgramContext();
-            ExecutionContext ex = new ExecutionContext(pc, null);
-            ex.setGlobal(ex);
-            prog.execute(ex);
+            prog.execute();
             prog.printAST();
 
         } catch (Exception ex) {

@@ -5,7 +5,6 @@
  */
 package Statement;
 
-import Block.Var;
 import Expression.Expression;
 import Program.ExecutionContext;
 import java.util.ArrayList;
@@ -14,11 +13,11 @@ import java.util.ArrayList;
  *
  * @author tzlat
  */
-public class CallProcedureStatement extends Statement {
+public class CallFunctionStatement extends Statement {
     private String ident;
     private ArrayList<Expression> argumenty;
 
-    public CallProcedureStatement(String ident,ArrayList<Expression> argumenty) {
+    public CallFunctionStatement(String ident,ArrayList<Expression> argumenty) {
         this.ident = ident;
         this.argumenty = argumenty;
     }
@@ -35,12 +34,12 @@ public class CallProcedureStatement extends Statement {
             par+=", ";
             par+=argumenty.get(i).toString(); 
         }
-        return "CallProcedureStatement{" + "ident=" + ident + "} Arguments("+par+")\n";
+        return "CallFunctionStatement{" + "ident=" + ident + "} Arguments("+par+")\n";
     }
 
     @Override
     public void execute(ExecutionContext ex) throws Exception {
         
-        ex.getPc().callProcedure(argumenty,ident, ex);
+        ex.getPc().callFunction(argumenty,ident, ex);
     }
 }

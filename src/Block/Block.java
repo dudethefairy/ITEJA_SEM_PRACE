@@ -18,24 +18,29 @@ public class Block {
     private ArrayList<Const> consts;
     private ArrayList<Var> vars;
     private ArrayList<Procedure> procedures;
+    private ArrayList<Function> functions;
     private Statement statement;
 
     public Block() {
         consts = new ArrayList<>();
         vars = new ArrayList<>();
         procedures = new ArrayList<>();
+        functions = new ArrayList<>();
     }
 
-    public void addConsts(ArrayList list) {
+    public void addConsts(ArrayList<Const> list) {
         consts.addAll(list);
     }
 
-    public void addVars(ArrayList list) {
+    public void addVars(ArrayList<Var> list) {
         vars.addAll(list);
     }
 
-    public void addProcedures(ArrayList list) {
+    public void addProcedures(ArrayList<Procedure> list) {
         procedures.addAll(list);
+    }
+    public void addFunctions(ArrayList<Function> list) {
+        functions.addAll(list);
     }
 
     public ArrayList<Const> getConsts() {
@@ -48,6 +53,9 @@ public class Block {
 
     public ArrayList<Procedure> getProcedures() {
         return procedures;
+    }
+    public ArrayList<Function> getFunctions() {
+        return functions;
     }
 
     public Statement getStatement() {
@@ -62,6 +70,8 @@ public class Block {
         ex.getVars().setVars(getVars());
         ex.getVars().setConsts(getConsts());
         ex.getPc().setProcs(getProcedures());
+        ex.getPc().setFuncs(getFunctions());
+        ex.getVars().setFuncs(getFunctions());
         getStatement().execute(ex);
     }
 
@@ -78,6 +88,10 @@ public class Block {
         string += "Procedures(" + procedures.size() + "):\n";
         for (Procedure proc : procedures) {
             string += "\n" + proc.toString() + "\n";
+        }
+        string += "Functions(" + functions.size() + "):\n";
+        for (Function func : functions) {
+            string += "\n" + func.toString() + "\n";
         }
         string += statement.toString();
         return string;
