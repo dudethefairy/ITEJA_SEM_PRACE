@@ -16,6 +16,7 @@ import java.util.ArrayList;
 public class CallFunctionStatement extends Statement {
     private String ident;
     private ArrayList<Expression> argumenty;
+    private Expression vyraz;
 
     public CallFunctionStatement(String ident,ArrayList<Expression> argumenty) {
         this.ident = ident;
@@ -25,6 +26,15 @@ public class CallFunctionStatement extends Statement {
     public String getIdent() {
         return ident;
     }
+
+    public ArrayList<Expression> getArgumenty() {
+        return argumenty;
+    }
+
+    public Expression getVyraz() {
+        return vyraz;
+    }
+    
 
     @Override
     public String toString() {
@@ -39,7 +49,6 @@ public class CallFunctionStatement extends Statement {
 
     @Override
     public void execute(ExecutionContext ex) throws Exception {
-        
         ex.getPc().callFunction(argumenty,ident, ex);
     }
 }

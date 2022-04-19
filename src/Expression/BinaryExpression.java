@@ -5,7 +5,7 @@
  */
 package Expression;
 
-import Lox.TokenType;
+import Lexer.TokenType;
 
 /**
  *

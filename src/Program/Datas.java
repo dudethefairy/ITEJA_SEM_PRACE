@@ -63,7 +63,7 @@ public class Datas {
     public void addFuncs(ArrayList<Function> funcs) {
         this.funcs.addAll(funcs);
     }
-    public void setFuncs(ArrayList<Function> consts) {
+    public void setFuncs(ArrayList<Function> funcs) {
         this.funcs = funcs;
     }
     public Object getF(String ident) throws Exception {

@@ -5,8 +5,8 @@
  */
 package Program;
 
-import Lox.Lox;
-import Lox.Token;
+import Lexer.Lexer;
+import Lexer.Token;
 import Parser.Parser;
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 public class Run {
 
     public static void main(String[] args) throws IOException {
-        Lox lox = new Lox();
+        Lexer lox = new Lexer();
         if (args.length == 1) {
             lox.runFileP(args[0]);
         } else {
@@ -33,7 +33,7 @@ public class Run {
         try {
             Program prog = new Program(lox.getTokens());
             prog.execute();
-            prog.printAST();
+//            prog.printAST();
 
         } catch (Exception ex) {
             Logger.getLogger(Run.class.getName()).log(Level.SEVERE, null, ex);

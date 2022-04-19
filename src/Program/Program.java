@@ -7,9 +7,9 @@ package Program;
 
 import Block.Block;
 import Block.Var;
-import Lox.Lox;
-import Lox.Token;
-import Lox.TokenType;
+import Lexer.Lexer;
+import Lexer.Token;
+import Lexer.TokenType;
 import Parser.Executable;
 import Parser.Parser;
 import java.io.File;

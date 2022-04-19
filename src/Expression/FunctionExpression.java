@@ -7,6 +7,8 @@ package Expression;
 
 import Exceptions.NotFoundException;
 import Program.ExecutionContext;
+import Statement.CallFunctionStatement;
+import Statement.Statement;
 
 /**
  *
@@ -15,9 +17,11 @@ import Program.ExecutionContext;
 public class FunctionExpression extends Expression {
 
     private String ident;
+    private CallFunctionStatement state;
 
-    public FunctionExpression(String ident) {
+    public FunctionExpression(String ident,CallFunctionStatement state) {
         this.ident = ident;
+        this.state = state;
     }
 
     public String getIdent() {
@@ -31,6 +35,7 @@ public class FunctionExpression extends Expression {
     @Override
     public Object eval(ExecutionContext ex) throws Exception {
         try {
+            state.execute(ex);
             return ex.getVars().getF(ident);
         } catch (NotFoundException ex1) {
             ExecutionContext exG = ex.getGlobal();

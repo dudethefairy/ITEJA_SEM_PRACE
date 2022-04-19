@@ -7,6 +7,7 @@ package Program;
 
 import Block.Function;
 import Block.Procedure;
+import Block.Var;
 import Expression.Expression;
 import java.util.ArrayList;
 
@@ -27,6 +28,7 @@ public class ProgramContext {
     public ArrayList<Procedure> getProcs() {
         return procs;
     }
+
     public void setProcs(ArrayList<Procedure> procs) {
         this.procs = procs;
     }
@@ -38,6 +40,7 @@ public class ProgramContext {
     public void setFuncs(ArrayList<Function> funcs) {
         this.funcs = funcs;
     }
+
     public void callFunction(ArrayList<Expression> argumenty, String ident, ExecutionContext ex) throws Exception {
         if (!funcs.isEmpty()) {
             ArrayList<Function> prochazeni = new ArrayList<>();
@@ -50,10 +53,21 @@ public class ProgramContext {
                     ExecutionContext exN = new ExecutionContext(ex.getPc(), ex.getGlobal());
                     exN.getVars().setVars(func.getBlock().getVars());
                     exN.getVars().setConsts(func.getBlock().getConsts());
-                    exN.getVars().addVars(func.getArguments());
-                    ArrayList<Function> list = new ArrayList<>();
-                    list.add((Function)ex.getVars().getF(ident));
-                    exN.getVars().addFuncs(list);
+                    exN.getVars().setFuncs(func.getBlock().getFunctions());
+                    //exN.getVars().addVars(func.getArguments());
+                    ArrayList<Var> args = func.getArguments();
+                    ArrayList<Var> prid = new ArrayList<Var>();
+                    outer:
+                    for (Var v : args) {
+                        for (Var var : exN.getVars().getVars()) {
+                            if (v.getIdent().equals(var.getIdent())) {
+                                continue outer;
+                            }
+                        }
+                        prid.add(v);
+                    }
+                    exN.getVars().addVars(prid);
+                    //
                     for (int i = 0; i < func.getArguments().size(); i++) {
                         Object eval = argumenty.get(i).eval(ex);
                         exN.getVars().set(func.getArguments().get(i).getIdent(), eval);
@@ -77,7 +91,20 @@ public class ProgramContext {
                     ExecutionContext exN = new ExecutionContext(ex.getPc(), ex.getGlobal());
                     exN.getVars().setVars(proc.getBlock().getVars());
                     exN.getVars().setConsts(proc.getBlock().getConsts());
-                    exN.getVars().addVars(proc.getArguments());
+                    //exN.getVars().addVars(proc.getArguments());
+                    ArrayList<Var> args = proc.getArguments();
+                    ArrayList<Var> prid = new ArrayList<Var>();
+                    outer:
+                    for (Var v : args) {
+                        for (Var var : exN.getVars().getVars()) {
+                            if (v.getIdent().equals(var.getIdent())) {
+                                continue outer;
+                            }
+                        }
+                        prid.add(v);
+                    }
+                    exN.getVars().addVars(prid);
+                    //
                     for (int i = 0; i < proc.getArguments().size(); i++) {
                         Object eval = argumenty.get(i).eval(ex);
                         exN.getVars().set(proc.getArguments().get(i).getIdent(), eval);

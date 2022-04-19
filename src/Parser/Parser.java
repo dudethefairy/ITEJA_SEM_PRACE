@@ -17,7 +17,6 @@ import Block.Procedure;
 import Block.Var;
 import Condition.BinaryRelCondition;
 import Condition.Condition;
-import Condition.OddCondition;
 import Expression.BinaryExpression;
 import Expression.Expression;
 import Expression.IdentExpression;
@@ -27,18 +26,21 @@ import Expression.Binary.Minus;
 import Expression.Unary.MinusUnary;
 import Expression.Binary.Multiply;
 import Expression.Binary.Plus;
+import Expression.FunctionExpression;
 import Expression.Unary.PlusUnary;
-import Lox.Lox;
-import Lox.Token;
-import Lox.TokenType;
+import Lexer.Lexer;
+import Lexer.Token;
+import Lexer.TokenType;
 import Statement.BeginEndStatement;
 import Statement.CallFunctionStatement;
 import Statement.CallProcedureStatement;
+import Statement.ForStatement;
 import Statement.IfStatement;
 import Statement.ReadStatement;
+import Statement.ReturnStatement;
 import Statement.SetStatement;
 import Statement.Statement;
-import Statement.WhileStatement;
+import Statement.RepeatStatement;
 import Statement.WriteStatement;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -61,7 +63,7 @@ public class Parser {
     }
 
     private ParseError printError(Token token, String message) {
-        Lox.error(token, message);
+        Lexer.error(token, message);
         return new ParseError();
     }
 
@@ -161,21 +163,21 @@ public class Parser {
                                 value = (double) list.pop().getLiteral();
                                 consts.add(new Const(ident, new DoubleD(value)));
                             } else {
-                                throw printError(list.getFirst(), "Ocekavam NUMBER nebo INTEGER");
+                                throw printError(list.getFirst(), "Ocekavam double nebo integer");
                             }
                         } else if (typ == TokenType.DATATYPE_INTEGER) {
                             if (list.peek().getType() == TokenType.INTEGER) {
                                 int value = (int) list.pop().getLiteral();
                                 consts.add(new Const(ident, new IntegerD(value)));
                             } else {
-                                throw printError(list.getFirst(), "Ocekavam INTEGER");
+                                throw printError(list.getFirst(), "Ocekavam integer");
                             }
                         } else {
                             if (list.peek().getType() == TokenType.STRING) {
                                 String value = (String) list.pop().getLiteral();
                                 consts.add(new Const(ident, new StringD(value)));
                             } else {
-                                throw printError(list.getFirst(), "Ocekavam STRING");
+                                throw printError(list.getFirst(), "Ocekavam string");
                             }
                         }
                         if (list.peek().getType() == TokenType.CARKA) {
@@ -193,7 +195,7 @@ public class Parser {
                 }
             }
         } else {
-            throw printError(list.getFirst(), "Ocekavam CONST");
+            throw printError(list.getFirst(), "Ocekavam const");
         }
     }
 
@@ -239,7 +241,7 @@ public class Parser {
                 }
             }
         } else {
-            throw printError(list.getFirst(), "Ocekavam VAR");
+            throw printError(list.getFirst(), "Ocekavam var");
         }
     }
 
@@ -384,16 +386,18 @@ public class Parser {
                 return readCallProcedureStatement();
             case FCALL:
                 return readCallFunctionStatement();
-            case OTAZNIK:
+            case READ:
                 return readReadStatement();
-            case VYKRICNIK:
+            case WRITE:
                 return readWriteStatement();
             case BEGIN:
                 return readBeginEndStatement();
             case IF:
                 return readIfStatement();
-            case WHILE:
-                return readWhileStatement();
+            case REPEAT:
+                return readRepeatStatement();
+            case FOR:
+                return readForStatement();
         }
         throw printError(list.getFirst(), "Neplatny statement token");
     }
@@ -414,7 +418,7 @@ public class Parser {
         return new SetStatement(ident, expression);
     }
 
-    public SetStatement readReturnStatement() throws Exception {
+    public ReturnStatement readReturnStatement() throws Exception {
         if (list.peek().getType() != TokenType.IDENT) {
             throw printError(list.getFirst(), "Ocekavam IDENT");
         }
@@ -424,7 +428,7 @@ public class Parser {
             throw printError(list.getFirst(), "Ocekavam :=");
         }
         Expression expression = readExpression(false);
-        return new SetStatement(ident, expression);
+        return new ReturnStatement(ident, expression);
     }
 
     public CallProcedureStatement readCallProcedureStatement() throws Exception {
@@ -490,30 +494,43 @@ public class Parser {
     }
 
     public ReadStatement readReadStatement() throws Exception {
-        if (list.peek().getType() != TokenType.OTAZNIK) {
-            throw printError(list.getFirst(), "Ocekavam ?");
+        if (list.pop().getType() != TokenType.READ) {
+            throw printError(list.getFirst(), "Ocekavam readln");
         }
-        list.pop();
+        if (list.pop().getType() != TokenType.LEVA_ZAVORKA) {
+            throw printError(list.getFirst(), "Ocekavam (");
+        }
         if (list.peek().getType() != TokenType.IDENT) {
             throw printError(list.getFirst(), "Ocekavam IDENT");
         }
         String ident = list.pop().getLexeme();
+
+        if (list.pop().getType() != TokenType.PRAVA_ZAVORKA) {
+            throw printError(list.getFirst(), "Ocekavam )");
+        }
         return new ReadStatement(ident);
     }
 
     public WriteStatement readWriteStatement() throws Exception {
-        if (list.peek().getType() != TokenType.VYKRICNIK) {
-            throw printError(list.getFirst(), "Ocekavam !");
+        if (list.pop().getType() != TokenType.WRITE) {
+            throw printError(list.getFirst(), "Ocekavam writeln");
         }
-        list.pop();
+
+        if (list.pop().getType() != TokenType.LEVA_ZAVORKA) {
+            throw printError(list.getFirst(), "Ocekavam (");
+        }
 
         Expression expression = readExpression(false);
+
+        if (list.pop().getType() != TokenType.PRAVA_ZAVORKA) {
+            throw printError(list.getFirst(), "Ocekavam )");
+        }
         return new WriteStatement(expression);
     }
 
     public BeginEndStatement readBeginEndStatement() throws Exception {
         if (list.peek().getType() != TokenType.BEGIN) {
-            throw printError(list.getFirst(), "Ocekavam BEGIN");
+            throw printError(list.getFirst(), "Ocekavam begin");
         }
         list.pop();
         ArrayList<Statement> aList = new ArrayList<>();
@@ -529,7 +546,7 @@ public class Parser {
                     break;
                 }
             } else {
-                throw printError(list.getFirst(), "Ocekavam END");
+                throw printError(list.getFirst(), "Ocekavam end");
             }
         }
         return new BeginEndStatement(aList);
@@ -537,12 +554,12 @@ public class Parser {
 
     public IfStatement readIfStatement() throws Exception {
         if (list.peek().getType() != TokenType.IF) {
-            throw printError(list.getFirst(), "Ocekavam IF");
+            throw printError(list.getFirst(), "Ocekavam if");
         }
         list.pop();
         Condition condition = readCondition();
         if (list.peek().getType() != TokenType.THEN) {
-            throw printError(list.getFirst(), "Ocekavam THEN");
+            throw printError(list.getFirst(), "Ocekavam then");
         }
         list.pop();
         Statement statement = readStatement();
@@ -550,32 +567,48 @@ public class Parser {
         return new IfStatement(statement, condition);
     }
 
-    public WhileStatement readWhileStatement() throws Exception {
-        if (list.peek().getType() != TokenType.WHILE) {
-            throw printError(list.getFirst(), "Ocekavam WHILE");
+    public RepeatStatement readRepeatStatement() throws Exception {
+        if (list.pop().getType() != TokenType.REPEAT) {
+            throw printError(list.getFirst(), "Ocekavam repeat");
         }
-        list.pop();
+        Statement statement = readStatement();
+        if (list.pop().getType() != TokenType.UNTIL) {
+            throw printError(list.getFirst(), "Ocekavam until");
+        }
+
         Condition condition = readCondition();
-        if (list.peek().getType() != TokenType.DO) {
-            throw printError(list.getFirst(), "Ocekavam DO");
+
+        return new RepeatStatement(statement, condition);
+    }
+
+    public ForStatement readForStatement() throws Exception {
+        if (list.pop().getType() != TokenType.FOR) {
+            throw printError(list.getFirst(), "Ocekavam for");
         }
-        list.pop();
+        String ident;
+        if (list.peek().getType() == TokenType.IDENT) {
+            ident = list.pop().getLexeme();
+        } else {
+            throw printError(list.getFirst(), "Ocekavam ident");
+        }
+        if (list.pop().getType() != TokenType.PRIRAZENI) {
+            throw printError(list.getFirst(), "Ocekavam :=");
+        }
+        Expression expr = readExpression(false);
+        if (list.pop().getType() != TokenType.TO) {
+            throw printError(list.getFirst(), "Ocekavam to");
+        }
+        Expression expr2 = readExpression(false);
+        if (list.pop().getType() != TokenType.DO) {
+            throw printError(list.getFirst(), "Ocekavam to");
+        }
         Statement statement = readStatement();
 
-        return new WhileStatement(statement, condition);
+        return new ForStatement(ident, expr, expr2, statement);
     }
 
     public Condition readCondition() throws Exception {
-        if (list.peek().getType() == TokenType.ODD) {
-            return readOddCondition();
-        }
         return readBinaryRelCondition();
-    }
-
-    public OddCondition readOddCondition() throws Exception {
-        list.pop();
-        Expression expression = readExpression(false);
-        return new OddCondition(expression);
     }
 
     public BinaryRelCondition readBinaryRelCondition() throws Exception {
@@ -660,6 +693,10 @@ public class Parser {
             String ident = list.pop().getLexeme();
             IdentExpression ie = new IdentExpression(ident);
             return ie;
+        } else if (list.peek().getType() == TokenType.FCALL) {
+            CallFunctionStatement stat = readCallFunctionStatement();
+            FunctionExpression func = new FunctionExpression(stat.getIdent(), stat);
+            return func;
         } else if (list.peek().getType() == TokenType.LEVA_ZAVORKA) {
             list.pop();
             return readExpression(true);

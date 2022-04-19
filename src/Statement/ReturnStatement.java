@@ -14,6 +14,7 @@ import Program.ExecutionContext;
  * @author tzlat
  */
 public class ReturnStatement extends Statement {
+
     private String ident;
     private Expression expr;
 
@@ -32,15 +33,15 @@ public class ReturnStatement extends Statement {
 
     @Override
     public String toString() {
-        return "SetStatement{" + "ident=" + ident + ", expr=" + expr + '}';
+        return "ReturnStatement{" + "ident=" + ident + ", expr=" + expr + '}';
     }
 
     @Override
     public void execute(ExecutionContext ex) throws Exception {
-                try {
-                    ex.getVars().setF(ident, expr.eval(ex));
-                } catch (NotFoundException exe) {
-                        ex.getGlobal().getVars().setF(ident, expr.eval(ex));
-                    }
+        try {
+            ex.getVars().setF(ident, expr.eval(ex));
+        } catch (NotFoundException exe) {
+            ex.getGlobal().getVars().setF(ident, expr.eval(ex));
         }
+    }
 }

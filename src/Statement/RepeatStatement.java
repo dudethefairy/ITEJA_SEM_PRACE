@@ -5,6 +5,7 @@
  */
 package Statement;
 
+import Block.Datatype.DoubleD;
 import Block.Datatype.IntegerD;
 import Condition.Condition;
 import Program.ExecutionContext;
@@ -13,22 +14,14 @@ import Program.ExecutionContext;
  *
  * @author tzlat
  */
-public class IfStatement extends Statement {
+public class RepeatStatement extends Statement {
 
     private Statement statement;
     private Condition condition;
-    private Statement elseStatement;
 
-    public IfStatement(Statement statement, Condition condition) {
+    public RepeatStatement(Statement statement, Condition condition) {
         this.statement = statement;
         this.condition = condition;
-        elseStatement = null;
-    }
-
-    public IfStatement(Statement statement, Condition condition, Statement elseStatement) {
-        this.statement = statement;
-        this.condition = condition;
-        this.elseStatement = elseStatement;
     }
 
     public Statement getStatement() {
@@ -41,22 +34,20 @@ public class IfStatement extends Statement {
 
     @Override
     public String toString() {
-        if (elseStatement == null) {
-            return "IfStatement{" + "condition=" + condition + ", statement=" + condition + '}';
-        }
-        return "IfStatement{" + "condition=" + condition + ", statement=" + statement + "\n elseStatement=" + elseStatement + '}';
+        return "RepeatStatement{" + "statement=" + statement + ", condition=" + condition + '}';
     }
 
     @Override
     public void execute(ExecutionContext ex) throws Exception {
         Object conEvalO = condition.eval(ex);
-        if (conEvalO.getClass() == IntegerD.class) {
+        if (conEvalO.getClass()==IntegerD.class) {
             IntegerD conEvalI = (IntegerD) conEvalO;
-            if (conEvalI.getValue() == 1) {
+            do{
                 statement.execute(ex);
+                conEvalO = condition.eval(ex);
+                conEvalI = (IntegerD) conEvalO;
             }
-        } else if (elseStatement != null) {
-            elseStatement.execute(ex);
+            while (conEvalI.getValue() == 1);
         }
     }
 

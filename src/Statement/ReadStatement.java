@@ -11,6 +11,7 @@ import Block.Datatype.IntegerD;
 import Block.Datatype.StringD;
 import Exceptions.NotFoundException;
 import Program.ExecutionContext;
+import java.util.Locale;
 import java.util.Scanner;
 
 /**
@@ -36,7 +37,7 @@ public class ReadStatement extends Statement {
 
     @Override
     public void execute(ExecutionContext ex) throws Exception {
-        Scanner vst = new Scanner(System.in);
+        Scanner vst = new Scanner(System.in).useLocale(Locale.US);;
         Object vstupO = null;
         DataType typ;
         boolean local;

@@ -6,7 +6,7 @@
 package Block;
 
 import Block.Datatype.DataType;
-import Lox.TokenType;
+import Lexer.TokenType;
 
 /**
  *

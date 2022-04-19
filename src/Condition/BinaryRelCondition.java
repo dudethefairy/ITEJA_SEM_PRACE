@@ -9,7 +9,7 @@ import Block.Datatype.DoubleD;
 import Block.Datatype.IntegerD;
 import Block.Datatype.StringD;
 import Expression.Expression;
-import Lox.TokenType;
+import Lexer.TokenType;
 import Program.ExecutionContext;
 import java.util.logging.Level;
 import java.util.logging.Logger;

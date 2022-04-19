@@ -40,7 +40,6 @@ public class CallProcedureStatement extends Statement {
 
     @Override
     public void execute(ExecutionContext ex) throws Exception {
-        
         ex.getPc().callProcedure(argumenty,ident, ex);
     }
 }

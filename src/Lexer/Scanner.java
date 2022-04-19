@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Lox;
+package Lexer;
 
 /**
  *
@@ -12,7 +12,7 @@ package Lox;
 import java.util.HashMap;
 import java.util.Map;
 
-import static Lox.TokenType.*;
+import static Lexer.TokenType.*;
 import java.util.LinkedList;
 import java.util.Stack;
 
@@ -39,10 +39,13 @@ class Scanner {
         keywords.put("end", END);
         keywords.put("if", IF);
         keywords.put("then", THEN);
-        keywords.put("while", WHILE);
+        keywords.put("else", ELSE);
+        keywords.put("repeat", REPEAT);
+        keywords.put("until", UNTIL);
+        keywords.put("for", FOR);
+        keywords.put("to", TO);
         keywords.put("do", DO);
-        keywords.put("odd", ODD);
-        keywords.put("read", READ);
+        keywords.put("readln", READ);
         keywords.put("writeln", WRITE);
         keywords.put("string", DATATYPE_STRING);
         keywords.put("double", DATATYPE_DOUBLE);
@@ -72,12 +75,6 @@ class Scanner {
     private void scanToken() {
         char c = advance();
         switch (c) {
-            case '?':
-                addToken(OTAZNIK);
-                break;
-            case '!':
-                addToken(VYKRICNIK);
-                break;
             case ',':
                 addToken(CARKA);
                 break;
@@ -145,7 +142,7 @@ class Scanner {
                 } else if (isAlpha(c)) {
                     identifier();
                 } else {
-                    Lox.error(line, "Neocekavany znak.");
+                    Lexer.error(line, "Neocekavany znak.");
                 }
         }
     }
@@ -214,7 +211,7 @@ class Scanner {
         }
 
         if (isAtEnd()) {
-            Lox.error(line, "Neukonceny string");
+            Lexer.error(line, "Neukonceny string");
             return;
         }
 
