@@ -428,6 +428,9 @@ public class Parser {
             throw printError(list.getFirst(), "Ocekavam :=");
         }
         Expression expression = readExpression(false);
+        if (list.peek().getType() != TokenType.END) {
+            throw printError(list.getFirst(), "Ocekavam end");
+        }
         return new ReturnStatement(ident, expression);
     }
 
@@ -563,8 +566,14 @@ public class Parser {
         }
         list.pop();
         Statement statement = readStatement();
-
-        return new IfStatement(statement, condition);
+        if (list.peek().getType() == TokenType.ELSE) {
+            list.pop();
+            
+            Statement statementElse = readStatement();
+            return new IfStatement(statement, condition, statementElse);
+        } else {
+            return new IfStatement(statement, condition);
+        }
     }
 
     public RepeatStatement readRepeatStatement() throws Exception {

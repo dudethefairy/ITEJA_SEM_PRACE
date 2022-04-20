@@ -1,47 +1,14 @@
-program bankovniucet;
-var pocet:int,jmeno:string, prijmeni:string, vek:int, penize:double, prijem:double,prijmy:double, vybrani:double, i:int;
+program factorial;
 
-procedure nastavOsobu(name:string,surname:string,age:int,money:double,income:double);
-begin
-set jmeno:=name;
-set prijmeni:=surname;
-set vek:=age;
-set penize:=money;
-set prijem:=income;
-if pocet=0 then begin
-set pocet:=1;
-pcall nastavOsobu('Petra','Janeckova',25,4500,3000);
-end;
-end;
+function factorial(fact:int):int;
+var h:int;
 
-function zjistiPrijmy(pocetMesicu:int,mesicniPrijem:double):double;
 begin
-zjistiPrijmy:=pocetMesicu*mesicniPrijem
+if fact<2 then set h:=1 else
+set h:=fact * fcall factorial(fact-1);
+factorial :=h
 end;
 
 begin
-set pocet:=0;
-pcall nastavOsobu('Petr','Novak',35,5000,2000);
-set prijmy:=fcall zjistiPrijmy(fcall zjistiPrijmy(fcall zjistiPrijmy(vek,2),2),prijem);
-
-writeln(jmeno+' '+prijmeni+' Příjmy:');
-writeln(prijmy);
-writeln('Zustatek');
-writeln(penize)
-
-writeln('Zadejte castku k vybrani:');
-readln(vybrani);
-
-repeat begin
-set penize:=penize-vybrani;
-writeln('Vybrano:');
-writeln(vybrani);
-writeln('Zustatek');
-writeln(penize)
-end
-until penize>2000
-
-for i:=10 to 0 do begin
-writeln(i*penize)
-end;
+writeln(fcall factorial(5))
 end. 

@@ -45,7 +45,7 @@ public class FunctionExpression extends Expression {
 
     @Override
     public String toString() {
-        return "IdentExpression{" + "ident=" + ident + '}';
+        return "FunctionExpression{" + "ident=" + ident + '}';
     }
     
 }

@@ -54,9 +54,11 @@ public class IfStatement extends Statement {
             IntegerD conEvalI = (IntegerD) conEvalO;
             if (conEvalI.getValue() == 1) {
                 statement.execute(ex);
+            } else if (elseStatement != null) {
+                elseStatement.execute(ex);
             }
-        } else if (elseStatement != null) {
-            elseStatement.execute(ex);
+        } else {
+            throw new Exception("Vysledek podminky v if statement neni spravny");
         }
     }
 

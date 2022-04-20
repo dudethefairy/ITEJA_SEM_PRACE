@@ -27,7 +27,7 @@ class Scanner {
 
     static {
         keywords = new HashMap<>();
-        keywords.put("program",PROGRAM);
+        keywords.put("program", PROGRAM);
         keywords.put("const", CONST);
         keywords.put("var", VAR);
         keywords.put("procedure", PROCEDURE);
@@ -75,6 +75,11 @@ class Scanner {
     private void scanToken() {
         char c = advance();
         switch (c) {
+            case '!':
+                if (match('=')) {
+                    addToken(NEROVNO);
+                }
+                break;
             case ',':
                 addToken(CARKA);
                 break;
@@ -86,9 +91,6 @@ class Scanner {
                 break;
             case ':':
                 addToken(match('=') ? PRIRAZENI : DVOJTECKA);
-                break;
-            case '#':
-                addToken(NEROVNO);
                 break;
             case '<':
                 addToken(match('=') ? MENSI_NEBO_ROVNO : MENSI);
@@ -187,12 +189,12 @@ class Scanner {
             while (isDigit(peek())) {
                 advance();
             }
-        }else{
+        } else {
             addToken(INTEGER, Integer.parseInt(source.substring(start, current)));
             return;
         }
         addToken(DOUBLE, Double.parseDouble(source.substring(start, current)));
-        
+
     }
 
     private char peekNext() {
@@ -222,6 +224,7 @@ class Scanner {
         String value = source.substring(start + 1, current - 1);
         addToken(STRING, value);
     }
+
     private char peek() {
         if (isAtEnd()) {
             return '\0';
