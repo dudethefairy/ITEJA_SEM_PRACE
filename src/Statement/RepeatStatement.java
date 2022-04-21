@@ -47,7 +47,7 @@ public class RepeatStatement extends Statement {
                 conEvalO = condition.eval(ex);
                 conEvalI = (IntegerD) conEvalO;
             }
-            while (conEvalI.getValue() == 1);
+            while (conEvalI.getValue() != 1);
         }
     }
 
