@@ -1,19 +1,14 @@
-program mocnina;
-const cislo:int=5;
-var jmeno:string='pepa',exp:int,i:int, vysledek:double;
+program factorial;
+
+function factorial(fact:int):int;
+var h:int;
 
 begin
-pcall writeln('Me jmeno je '+jmeno+' a umocnime si cislo 5, zadejte exponent:');
-pcall readln(exp);
-set vysledek := cislo;
-
-for i:= 0 to exp do begin
-if i!=0 then
-set vysledek := vysledek*cislo;
+if fact<2 then set h:=1 else
+set h:= fact*fcall factorial(fact-1);
+factorial := h
 end;
 
-pcall writeln('Vysledek je');
-set vysledek:=vysledek/cislo;
-if exp<0 then set vysledek:=1/vysledek;
-pcall writeln(vysledek);
+begin
+pcall writeln(fcall factorial(5));
 end. 
