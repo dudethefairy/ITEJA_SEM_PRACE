@@ -5,8 +5,6 @@
  */
 package Expression;
 
-import Lexer.TokenType;
-
 /**
  *
  * @author tzlat

@@ -6,18 +6,10 @@
 package Program;
 
 import Block.Block;
-import Block.Var;
-import Lexer.Lexer;
 import Lexer.Token;
 import Lexer.TokenType;
-import Parser.Executable;
 import Parser.Parser;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *

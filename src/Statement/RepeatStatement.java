@@ -5,7 +5,6 @@
  */
 package Statement;
 
-import Block.Datatype.DoubleD;
 import Block.Datatype.IntegerD;
 import Condition.Condition;
 import Program.ExecutionContext;

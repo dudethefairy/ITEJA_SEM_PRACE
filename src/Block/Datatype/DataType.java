@@ -5,8 +5,6 @@
  */
 package Block.Datatype;
 
-import Lexer.TokenType;
-
 /**
  *
  * @author tzlat

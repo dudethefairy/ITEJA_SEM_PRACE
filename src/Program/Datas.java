@@ -6,8 +6,6 @@
 package Program;
 
 import Block.Const;
-import Block.Data;
-import Block.Datatype.DataType;
 import Block.Datatype.DoubleD;
 import Block.Datatype.IntegerD;
 import Block.Datatype.StringD;

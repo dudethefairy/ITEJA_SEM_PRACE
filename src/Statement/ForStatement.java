@@ -5,11 +5,8 @@
  */
 package Statement;
 
-import Block.Datatype.DoubleD;
 import Block.Datatype.IntegerD;
-import Condition.Condition;
 import Expression.Expression;
-import Expression.IdentExpression;
 import Expression.LiteralExpression;
 import Program.ExecutionContext;
 

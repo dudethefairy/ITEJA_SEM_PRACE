@@ -7,7 +7,6 @@ package Parser;
 
 import Block.Block;
 import Block.Const;
-import Block.Data;
 import Block.Datatype.DataType;
 import Block.Datatype.DoubleD;
 import Block.Datatype.IntegerD;
@@ -44,7 +43,6 @@ import Statement.RepeatStatement;
 import Statement.WriteStatement;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  *

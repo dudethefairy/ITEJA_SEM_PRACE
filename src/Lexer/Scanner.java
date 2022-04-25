@@ -14,7 +14,6 @@ import java.util.Map;
 
 import static Lexer.TokenType.*;
 import java.util.LinkedList;
-import java.util.Stack;
 
 class Scanner {
 
